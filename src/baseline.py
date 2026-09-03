@@ -31,3 +31,11 @@ pred = clf.predict(Xte)
 
 print("Macro-F1:", round(f1_score(y_test, pred, average="macro"), 4))
 print(classification_report(y_test, pred, target_names=LABELS))
+
+from sklearn.metrics import confusion_matrix
+import pandas as pd
+cm = pd.DataFrame(confusion_matrix(y_test, pred), index=LABELS, columns=LABELS)
+cm.to_csv("data/confusion_baseline.csv")
+for i, lab in enumerate(LABELS):
+    row = cm.iloc[i].drop(lab)
+    print(f"{lab} ← most confused with: {row.idxmax()} ({row.max()})")
