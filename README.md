@@ -1,5 +1,6 @@
 # Arabic Dialect Identification
 
+   **Try it:** [Live demo](https://huggingface.co/spaces/zoro6u/arabic-dialect-id) · [Model](https://huggingface.co/zoro6u/marbert-arabic-dialect-id)
 Country-level Arabic dialect classification from short text (tweets), covering 18 Arab countries. Built as a portfolio project comparing a classical baseline against a fine-tuned Arabic transformer, with the goal of serving the best model as an API.
 
 ## Dataset
@@ -52,7 +53,8 @@ Training: lr 2e-5, batch 128 (2×T4), max_len 64, fp16, warmup 400 steps, weight
 src/load_data.py   # dataset loading + label names
 src/baseline.py    # TF-IDF + LinearSVC baseline, confusion analysis
 notebooks/         # MARBERT fine-tuning (Kaggle)
-api/               # FastAPI inference service (planned)
+api/               # FastAPI inference service + Dockerfile (self-hosting)
+space/             # Gradio demo deployed on Hugging Face Spaces
 ```
 
 ## Setup
