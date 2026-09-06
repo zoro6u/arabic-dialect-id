@@ -1,3 +1,4 @@
+![tests](https://github.com/zoro6u/arabic-dialect-id/actions/workflows/tests.yml/badge.svg)
 # Arabic Dialect Identification
 
    **Try it:** [Live demo](https://huggingface.co/spaces/zoro6u/arabic-dialect-id) · [Model](https://huggingface.co/zoro6u/marbert-arabic-dialect-id)
