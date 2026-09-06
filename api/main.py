@@ -1,4 +1,6 @@
 import re
+from contextlib import asynccontextmanager
+
 import torch
 from fastapi import FastAPI
 from pydantic import BaseModel, Field
@@ -6,7 +8,6 @@ from transformers import AutoTokenizer, AutoModelForSequenceClassification
 
 MODEL_ID = "zoro6u/marbert-arabic-dialect-id"
 
-app = FastAPI(title="Arabic Dialect Identification API", version="0.1.0")
 
 def clean(text: str) -> str:
     text = re.sub(r"@\w+", " ", text)
@@ -15,23 +16,32 @@ def clean(text: str) -> str:
     text = re.sub(r"[\u064B-\u0652]", "", text)
     return re.sub(r"\s+", " ", text).strip()
 
-@app.on_event("startup")
-def load_model():
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
     app.state.tok = AutoTokenizer.from_pretrained(MODEL_ID)
     app.state.model = AutoModelForSequenceClassification.from_pretrained(MODEL_ID).eval()
     app.state.labels = app.state.model.config.id2label
+    yield
+
+
+app = FastAPI(title="Arabic Dialect Identification API", version="0.1.0", lifespan=lifespan)
+
 
 class PredictRequest(BaseModel):
     text: str = Field(..., min_length=1, max_length=1000)
+
 
 class Prediction(BaseModel):
     dialect: str
     confidence: float
     top3: list[dict]
 
+
 @app.get("/health")
 def health():
     return {"status": "ok", "model": MODEL_ID}
+
 
 @app.post("/predict", response_model=Prediction)
 def predict(req: PredictRequest):
